@@ -19,8 +19,6 @@ How to use:
 
 2) In JavaScript, register your engines and load renderTmpl.
 
-{
-$(function() {
 	
 	//register a known template library:
 	
@@ -49,6 +47,3 @@ $(function() {
 	//call load to indicate that we're ready to start loading the templates.
 
 	$.renderTmpl.load();
-
-});
-}
