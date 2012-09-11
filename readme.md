@@ -11,6 +11,8 @@ How to use:
 <link rel="template/engine-name" type="text/html" href="mytemplate.tmpl.html" />
 
 2) In JavaScript, register your engines and load renderTmpl.
+
+//begin javascript code.
 $(function() {
 	
 	//register a known template library:
@@ -42,6 +44,7 @@ $(function() {
 	$.renderTmpl.load();
 
 });
+//end javascript code.
 
 Future releases:
 -> remove dependency on jQuery.
