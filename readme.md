@@ -1,18 +1,25 @@
 renderTmpl: Loads external template files and renders them with a template engine in JavaScript.
 
 Features:
--> Allows templates to be broken out into seperate files.
--> Supports multiple template engines on a single page.
--> Notifies your javascript code when templates have loaded with the ready() callback.
+
+Allows templates to be broken out into seperate files.
+
+Supports multiple template engines on a single page.
+
+Notifies your javascript code when templates have loaded with the ready() callback.
+
+Future releases:
+
+remove dependency on jQuery.
 
 How to use:
 
 1) Add your template file as a link:
-<link rel="template/engine-name" type="text/html" href="mytemplate.tmpl.html" />
+&lt;link rel="template/engine-name" type="text/html" href="mytemplate.tmpl.html" /&gt;
 
 2) In JavaScript, register your engines and load renderTmpl.
 
-//begin javascript code.
+//javascript
 
 $(function() {
 	
@@ -45,8 +52,3 @@ $(function() {
 	$.renderTmpl.load();
 
 });
-
-//end javascript code.
-
-Future releases:
--> remove dependency on jQuery.
