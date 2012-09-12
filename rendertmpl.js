@@ -92,6 +92,10 @@ var renderTmpl = {};
 			}
 		}
 		
+		var trimString = function(str) {
+			return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+		};
+		
 		//closure function that handles callback from ajax file load.
 		var handleLoadFile = function(file, rel) {
 			return function(data) {
@@ -119,7 +123,7 @@ var renderTmpl = {};
 							
 							//get the template name.
 							var _partname = ""+lines[i].substr(14);
-							_partname = name + "_" + _partname.substr(0, _partname.indexOf('-')-1);
+							_partname = trimString(name + "_" + _partname.substr(0, _partname.indexOf('-'))).replace(' ', '');
 							
 							if (temp.length > 0)
 								items[partname] = ""+temp;
