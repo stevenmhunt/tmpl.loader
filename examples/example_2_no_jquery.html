@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+	<head>
+
+		<title>renderTmpl - Example 2 - no jQuery</title>
+	
+		<link rel="template/basic-custom" type="text/html" href="mytemplate.tmpl.html" />
+
+		<script src="../rendertmpl.js" type="text/javascript"></script>
+		
+		<script type="text/javascript">
+		
+		//register the custom alias for the "basic" engine.
+		renderTmpl.engines.basic('basic-custom');
+		
+		renderTmpl.ready(function() {
+			document.getElementById('output').innerHTML = renderTmpl.render('mytemplate', { message: "test message!" });
+		});
+		</script>
+		
+	</head>
+	<body>
+		<h1>renderTmpl Example 2: Custom alias running without jQuery</h1>
+		Note that if you run this html file without a web server, you may receive error messages in some browsers due to security issues with loading local files.
+		<h3>Sample Output:</h3>
+		<div id="output"></div>
+	</body>
+</html>

@@ -2,6 +2,8 @@
  * version 0.1
  * http://github.com/stevenmtwhunt/rendertmpl */
 
+var renderTmpl = {};
+
 (function(global, jQuery, undefined) {
 
 	var _tmplCount = 0;
@@ -41,7 +43,7 @@
 	};
 	
 	//used to render templates based on name and data.
-	var renderTmpl = function(tmpl, data) {
+	var renderTmplFn = function(tmpl, data) {
 		var render = onRender(_renderTmplTypes[tmpl]);
 		return render(tmpl, data);
 	};
@@ -200,23 +202,54 @@
 		return lambdaHandler(_renderTmplOnReset, name, lambda);
 	};
 	
+	var _renderTmplBasicTmpls = {};
+	
 	var engines = {
 		
+		//integration of the jsRender library.
 		jsrender: function(name) {
 			//use default name if no name is given.
 			var alias = (name === undefined ? "x-jsrender" : name);
 			
 			onRender(alias, function(tmpl, data) {
-				return $.templates[tmpl].render(data);
+				var a = (!jQuery ? jsviews : jQuery);
+				return a.templates[tmpl].render(data);
 			});
 	
 			onRegister(alias, function(tmpl, data) {
-				return $.templates(tmpl, data);
+				var a = (!jQuery ? jsviews : jQuery);
+				return a.templates(tmpl, data);
 			});
 			
 			onReset(alias, function() {
-				$.templates = {};
+				var a = (!jQuery ? jsviews : jQuery);
+				a.templates = {};
 			});
+		},
+		
+		/* basic template engine for use in examples.
+		 * NOT RECOMMENDED FOR PRODUCTION USE.
+		 * Iterates through model and replaces {key} with the value from the model. */
+		basic: function(name) {
+			//use default name if no name is given.
+			var alias = (name === undefined ? "basic" : name);
+			
+			onRegister(alias, function(tmpl, data) {
+				_renderTmplBasicTmpls[tmpl] = data;
+			});
+			
+			onRender(alias, function(tmpl, data) {
+				var result = ""+_renderTmplBasicTmpls[tmpl];
+				for (key in data) {
+					result = result.replace('{'+key+'}', data[key]);				
+				}
+				return result;
+			});
+			
+			onReset(alias, function() {
+				_renderTmplBasicTmpls = {};
+			});
+			
 		},
 		
 		register: function(name, callbacks) {
@@ -225,16 +258,40 @@
 			onReset(name, callbacks.reset);
 		}
 	};
-	
-	//register jQuery extensions.
-	var lib = jQuery;
-	lib.renderTmpl = renderTmpl;
-	lib.renderTmpl.reset = reset;
-	lib.renderTmpl.reload = reload;
-	lib.renderTmpl.ready = ready;
-	lib.renderTmpl.engines = engines;
 
-	$(window).load(function() {
+	//register functions manually.
+	renderTmpl.render = renderTmplFn;
+	renderTmpl.reset = reset;
+	renderTmpl.reload = reload;
+	renderTmpl.ready = ready;
+	renderTmpl.engines = engines;
+
+	//register jQuery extensions if available.
+	if (jQuery) {
+		jQuery.renderTmpl = renderTmplFn;
+		jQuery.renderTmpl.reset = reset;
+		jQuery.renderTmpl.reload = reload;
+		jQuery.renderTmpl.ready = ready;
+		jQuery.renderTmpl.engines = engines;
+	}
+	
+	/*addLoadEvent() was written by Simon Willison. */
+	function addLoadEvent(func) {
+	  var oldonload = window.onload;
+	  if (typeof window.onload != 'function') {
+	    window.onload = func;
+	  } else {
+	    window.onload = function() {
+	      if (oldonload) {
+	        oldonload();
+	      }
+	      func();
+	    }
+	  }
+	}
+
+	//fire load function once the window loads.	
+	addLoadEvent(function() {
 		if (_renderTmplLoaded === false)
 			load();
 	});
