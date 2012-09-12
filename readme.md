@@ -1,6 +1,7 @@
-renderTmpl: Loads external template files and renders them with a template engine in JavaScript.
+**renderTmpl**: Loads external template files and renders them with a template engine in JavaScript.
 
-*Features:*
+Features
+--------
 
 Allows templates to be broken out into seperate files.
 
@@ -10,11 +11,12 @@ Built-in support for jsRender.
 
 Notifies your javascript code when templates have loaded with the ready() callbacks.
 
-*How to use:*
+How to use
+----------
 
 1) Add your template file as a link:
 ```html
-<link rel="template/x-jsrender" type="text/html" href="mytemplate.tmpl.html" />
+<link rel="template/jsrender" type="text/html" href="mytemplate.tmpl.html" />
 ```
 
 Note that the name of the template is automatically extracted from the file name.
@@ -36,12 +38,13 @@ Note that the name of the template is automatically extracted from the file name
 	
 ```
 
-*Fancy Stuff:*
+Fancy Stuff
+-----------
 
 You can register a built-in template engine with a custom alias I.E. rel="template/custom-alias":
 ```javascript
 	
-	//jsrender by default uses "x-jsrender" and is configured automatically.
+	//jsrender by default uses "jsrender" and is configured automatically.
 	$.renderTmpl.engines.jsrender('custom-alias'); 
 
 ```
@@ -67,7 +70,8 @@ You can also register a completely custom template engine:
 
 ```
 
-*Future releases/TODO list:*
+Future releases
+---------------
 
 Remove dependency on jQuery.
 
