@@ -1,4 +1,9 @@
-**renderTmpl**: Loads external template files and renders them with a template engine in JavaScript.
+renderTmpl
+==========
+
+**Version 0.1**
+
+Loads external template files and renders them with a template engine in JavaScript.
 
 Features
 --------
@@ -8,6 +13,8 @@ Allows templates to be broken out into seperate files.
 Supports multiple template engines side-by-side on a single page.
 
 Built-in support for jsRender.
+
+Works with jQuery... or not. Your choice.
 
 Notifies your javascript code when templates have loaded with the ready() callbacks.
 
@@ -72,7 +79,5 @@ You can also register a completely custom template engine:
 
 Future releases
 ---------------
-
-Remove dependency on jQuery.
 
 Add additional templating engines.
