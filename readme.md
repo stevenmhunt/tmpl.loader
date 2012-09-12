@@ -1,9 +1,9 @@
-renderTmpl
-==========
+RenderTmpl: Simple Template Loading and Rendering
+=================================================
 
 **Version 0.1**
 
-Loads external template files and renders them with a template engine in JavaScript.
+*Loads external template files and renders them with a template engine in JavaScript.*
 
 Features
 --------
