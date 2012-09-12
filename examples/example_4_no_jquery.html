@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+	<head>
+
+		<title>renderTmpl - Example 4 - no jQuery</title>
+	
+		<link rel="template/basic-multipart" type="text/html" href="multipart_template.tmpl.html" />
+
+		<script src="../rendertmpl.js" type="text/javascript"></script>
+		
+		<script type="text/javascript">
+				
+		renderTmpl.ready(function() {
+			document.getElementById('output').innerHTML = 
+				renderTmpl.render('multipart_template_part1', { message: "test message!" }) + 
+				renderTmpl.render('multipart_template_part2', { message: "test message!" });
+		});
+		
+		</script>
+		
+	</head>
+	<body>
+		<h1>renderTmpl Example 4: multipart templates without jQuery</h1>
+		Note that if you run this html file without a web server, you may receive error messages in some browsers due to security issues with loading local files.
+		<h3>Sample Output:</h3>
+		<div id="output"></div>
+	</body>
+</html>

@@ -98,12 +98,57 @@ var renderTmpl = {};
 	
 				var name = file.substring(file.lastIndexOf("/")+1, file.indexOf('.', file.lastIndexOf("/")+1));
 				
-				//build array that remembers which type the template is.
-				_renderTmplTypes[name] = rel;
-				
+				var multipart = false;
+				var relName = rel;
+				if (relName.lastIndexOf('-') > -1 && relName.substr(relName.lastIndexOf('-')+1) == 'multipart') {
+					relName = relName.substr(0, relName.lastIndexOf('-'));
+					multipart = true;
+				}
+												
 				//register template by name.
-				var reg = onRegister(rel);
-				reg(name, data);
+				var reg = onRegister(relName);
+				
+				//if multipart template, parse out the template names and load them individually.
+				if (multipart) {
+					var items = {};
+					var temp = "";
+					var lines = data.split("\n");
+					var partname = "";
+					for (var i = 0; i < lines.length; i++) {
+						if (lines[i].length > 14 && lines[i].substr(0, 14) == '<!-- template ') {
+							
+							//get the template name.
+							var _partname = ""+lines[i].substr(14);
+							_partname = name + "_" + _partname.substr(0, _partname.indexOf('-')-1);
+							
+							if (temp.length > 0)
+								items[partname] = ""+temp;
+								
+							temp = "";
+							partname = ""+_partname;
+						}
+						else
+							temp += lines[i] + "\n";
+					}
+					
+					if (temp.length > 0)
+						items[partname] = ""+temp;
+					
+					for (var key in items) {
+		
+						//build array that remembers which type the template is.
+						_renderTmplTypes[key] = relName;
+
+						reg(key, items[key]);
+					}
+				}
+				else {
+
+					//build array that remembers which type the template is.
+					_renderTmplTypes[name] = relName;
+
+					reg(name, data);
+				}
 							
 				//subtract counter.				
 				if (--_tmplCount == 0) {
@@ -179,7 +224,7 @@ var renderTmpl = {};
 			return arr;
 		//if the name is not in the array, and the lambda is not valid, return.
 		else if (lambda === undefined || typeof lambda != 'function')
-			return NULL;
+			return null;
 		
 		//if the name is not in the array, or the name is in the array but none of the other conditions matched, add/update the value.
 		arr[name] = lambda;
