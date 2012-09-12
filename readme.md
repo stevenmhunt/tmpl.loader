@@ -10,18 +10,14 @@ Built-in support for jsRender.
 
 Notifies your javascript code when templates have loaded with the ready() callbacks.
 
-*Future releases:*
-
-remove dependency on jQuery.
-
-add additional templating engines.
-
 *How to use:*
 
 1) Add your template file as a link:
 ```html
 <link rel="template/x-jsrender" type="text/html" href="mytemplate.tmpl.html" />
 ```
+
+Note that the name of the template is automatically extracted from the file name.
 
 2) In JavaScript, add a ready callback.
 
@@ -70,3 +66,9 @@ You can also register a completely custom template engine:
 	});
 
 ```
+
+*Future releases/TODO list:*
+
+Remove dependency on jQuery.
+
+Add additional templating engines.
