@@ -4,9 +4,11 @@ Features:
 
 Allows templates to be broken out into seperate files.
 
-Supports multiple template engines on a single page.
+Supports multiple template engines side-by-side on a single page.
 
-Notifies your javascript code when templates have loaded with the ready() callback.
+Built-in support for jsRender.
+
+Notifies your javascript code when templates have loaded with the ready() callbacks.
 
 Future releases:
 
@@ -19,27 +21,35 @@ How to use:
 <link rel="template/engine-name" type="text/html" href="mytemplate.tmpl.html" />
 ```
 
-2) In JavaScript, register your engines and load renderTmpl.
+2) In JavaScript, register any custom engines and a ready callback.
 
 ```javascript
     $(function() {
 
-	//register a known template library:
-	
-	$.renderTmpl.engines.jsrender('engine-name');
+	//Note: if you use the default engine configuration, no code is required to configure it.
 
+	//register a built-in template library with a different alias:
+	
+	//jsrender by default uses "x-jsrender" and is configured automatically.
+	$.renderTmpl.engines.jsrender('custom-jsrender'); 
+	
 	//or... register a custom engine:
 
-	$.renderTmpl.onRegister('engine-name', function(name, data) {
+	$.renderTmpl.engines.register('engine-name', {
 		//code to register the template with some sort of collection.
-		...
-	});
-	
-	$.renderTmpl.onRender('engine-name', function(name, data) {
+		register: function(name, data) {
+			...
+		}),
 		//code to render the template given some set of data input.
-		...
+		render: function(name, data) {
+			...
+		}),
+		//code to reset the template collection for the engine.
+		reset: function() {
+			...
+		}
 	});
-		
+			
 	//set a callback so that you can do something with the templates once they are loaded.
 	$.renderTmpl.ready(function() {
 		
@@ -47,9 +57,5 @@ How to use:
 		alert($.renderTmpl('myTemplate', { message: "whatever" }));
 		
 	});
-	
-	//call load to indicate that we're ready to start loading the templates.
-
-	$.renderTmpl.load();
     }
 ```
