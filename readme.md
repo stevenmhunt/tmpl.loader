@@ -1,6 +1,6 @@
 renderTmpl: Loads external template files and renders them with a template engine in JavaScript.
 
-Features:
+*Features:*
 
 Allows templates to be broken out into seperate files.
 
@@ -10,31 +10,50 @@ Built-in support for jsRender.
 
 Notifies your javascript code when templates have loaded with the ready() callbacks.
 
-Future releases:
+*Future releases:*
 
 remove dependency on jQuery.
 
-How to use:
+add additional templating engines.
+
+*How to use:*
 
 1) Add your template file as a link:
 ```html
-<link rel="template/engine-name" type="text/html" href="mytemplate.tmpl.html" />
+<link rel="template/x-jsrender" type="text/html" href="mytemplate.tmpl.html" />
 ```
 
-2) In JavaScript, register any custom engines and a ready callback.
+2) In JavaScript, add a ready callback.
 
 ```javascript
-    $(function() {
+	//set a callback so that you can do something with the templates once they are loaded.
+	$.renderTmpl.ready(function() {
+		
+		//now we're ready to start rendering with the template.
+		
+		//just call renderTmpl() and pass the template name and a model to bind with.
+		var content = $.renderTmpl('mytemplate', { message: "whatever" });
+		
+		//let's have it pop up on the screen.
+		alert('rendered content: '+content);		
+	});
+	
+```
 
-	//Note: if you use the default engine configuration, no code is required to configure it.
+*Fancy Stuff:*
 
-	//register a built-in template library with a different alias:
+You can register a built-in template engine with a custom alias I.E. rel="template/custom-alias":
+```javascript
 	
 	//jsrender by default uses "x-jsrender" and is configured automatically.
-	$.renderTmpl.engines.jsrender('custom-jsrender'); 
-	
-	//or... register a custom engine:
+	$.renderTmpl.engines.jsrender('custom-alias'); 
 
+```
+
+You can also register a completely custom template engine:
+```javascript
+
+	//register a custom engine:
 	$.renderTmpl.engines.register('engine-name', {
 		//code to register the template with some sort of collection.
 		register: function(name, data) {
@@ -49,13 +68,5 @@ How to use:
 			...
 		}
 	});
-			
-	//set a callback so that you can do something with the templates once they are loaded.
-	$.renderTmpl.ready(function() {
-		
-		//now we're ready to start rendering with the template. Just call renderTmpl() and pass the template name and a model to bind with.
-		alert($.renderTmpl('myTemplate', { message: "whatever" }));
-		
-	});
-    }
+
 ```
