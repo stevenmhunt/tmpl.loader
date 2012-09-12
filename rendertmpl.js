@@ -10,6 +10,7 @@ var renderTmpl = {};
 	var _renderTmplTypes = new Array();
 	
 	//used to handle xml http requests.
+	//based on code posted by Lukasz Szajkowski.
 	var xhr = function(url, callback) {
 
 	  	var http_request = false;
@@ -43,9 +44,9 @@ var renderTmpl = {};
 	};
 	
 	//used to render templates based on name and data.
-	var renderTmplFn = function(tmpl, data) {
-		var render = onRender(_renderTmplTypes[tmpl]);
-		return render(tmpl, data);
+	var render = function(tmpl, data) {
+		var fn = onRender(_renderTmplTypes[tmpl]);
+		return fn(tmpl, data);
 	};
 	
 	var _renderTmplLoaded = false;
@@ -260,7 +261,7 @@ var renderTmpl = {};
 	};
 
 	//register functions manually.
-	renderTmpl.render = renderTmplFn;
+	renderTmpl.render = render;
 	renderTmpl.reset = reset;
 	renderTmpl.reload = reload;
 	renderTmpl.ready = ready;
@@ -268,7 +269,8 @@ var renderTmpl = {};
 
 	//register jQuery extensions if available.
 	if (jQuery) {
-		jQuery.renderTmpl = renderTmplFn;
+		jQuery.renderTmpl = render;
+		jQuery.renderTmpl.render = render;
 		jQuery.renderTmpl.reset = reset;
 		jQuery.renderTmpl.reload = reload;
 		jQuery.renderTmpl.ready = ready;
