@@ -74,14 +74,24 @@ $.renderTmpl.engines.register('engine-name', {
 
 If you want to have multiple templates in a single large file (production scenarios possibly), you can do the following:
 
-1) Add your template with *"-multipart"* at the end of the REL attribute:
+1) Create your template file with comments indicating the sections:
+```html
+<!-- template section1 -->
+template section 1
+...
+<!-- template section2 -->
+template section 2
+...
+```
+
+2) Add your template with *"-multipart"* at the end of the REL attribute:
 ```html
 <link rel="template/jsrender-multipart" type="text/html" href="mytemplate_multi.tmpl.html" />
 ```
 
-2) Reference the templates as "file name"_"part name":
+3) Reference the templates as "file name"_"part name":
 ```javascript
-$.renderTmpl('mytemplate_multi_part1', { data: "foo" });
+$.renderTmpl('mytemplate_multi_section1', { data: "foo" });
 ```
 
 Future releases
