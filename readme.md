@@ -15,11 +15,15 @@ remove dependency on jQuery.
 How to use:
 
 1) Add your template file as a link:
-&lt;link rel="template/engine-name" type="text/html" href="mytemplate.tmpl.html" /&gt;
+```html
+<link rel="template/engine-name" type="text/html" href="mytemplate.tmpl.html" />
+```
 
 2) In JavaScript, register your engines and load renderTmpl.
 
-	
+```javascript
+    $(function() {
+
 	//register a known template library:
 	
 	$.renderTmpl.engines.jsrender('engine-name');
@@ -47,3 +51,5 @@ How to use:
 	//call load to indicate that we're ready to start loading the templates.
 
 	$.renderTmpl.load();
+    }
+```
