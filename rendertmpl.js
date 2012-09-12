@@ -31,7 +31,7 @@
 	       if (http_request.readyState == 4) {
 	           if (http_request.status == 200)
 					callback(http_request.responseText);
-			   else return http_request.status + ')';		   
+			   else return http_request.status;		   
 	       }
 	   };
 	   
@@ -46,9 +46,24 @@
 		return render(tmpl, data);
 	};
 	
+	var _renderTmplLoaded = false;
+	
 	//loads templates from associated files.
 	var load = function() {
-			
+
+		//only load once per request.
+		if (_renderTmplLoaded)
+			return;
+						
+		_renderTmplLoaded = true;	
+		
+		//register all configured engines.
+		for (var key in engines) {
+			if (key != 'register') {
+				engines[key]();
+			}
+		}
+		
 		var todo = new Array();
 		var rels = new Array();
 		
@@ -103,6 +118,32 @@
 		}
 	};
 	
+	var reload = function() {
+		
+		if (_renderTmplLoaded) {
+			for (var i = 0; i < _renderTmplOnReset.length; i++) {
+				var reset = _renderTmplOnReset[i];
+				reset();
+			}
+			_renderTmplLoaded = false;
+		}
+		
+		load();
+	}
+	
+	//resets the templates.
+	var reset = function() {
+
+		for (var i = 0; i < _renderTmplOnReset.length; i++) {
+			var reset = _renderTmplOnReset[i];
+			reset();
+		}
+
+		_renderTmplOnRender = new Array();
+		_renderTmplOnRegister = new Array();
+		_renderTmplOnReset = new Array();
+	}
+	
 	//manages lambdas to call when templates are ready.
 	var _renderTmplReady = new Array();
 	var ready = function(lambda) {
@@ -153,7 +194,14 @@
 		return lambdaHandler(_renderTmplOnRegister, name, lambda);
 	};
 	
+	//on reset lambda handler.
+	var _renderTmplOnReset = new Array();
+	var onReset = function(name, lambda) {
+		return lambdaHandler(_renderTmplOnReset, name, lambda);
+	};
+	
 	var engines = {
+		
 		jsrender: function(name) {
 			//use default name if no name is given.
 			var alias = (name === undefined ? "x-jsrender" : name);
@@ -165,16 +213,30 @@
 			onRegister(alias, function(tmpl, data) {
 				return $.templates(tmpl, data);
 			});
+			
+			onReset(alias, function() {
+				$.templates = {};
+			});
+		},
+		
+		register: function(name, callbacks) {
+			onRender(name, callbacks.render);
+			onRegister(name, callbacks.register);
+			onReset(name, callbacks.reset);
 		}
 	};
 	
 	//register jQuery extensions.
 	var lib = jQuery;
 	lib.renderTmpl = renderTmpl;
-	lib.renderTmpl.load = load;
+	lib.renderTmpl.reset = reset;
+	lib.renderTmpl.reload = reload;
 	lib.renderTmpl.ready = ready;
-	lib.renderTmpl.onRender = onRender;
-	lib.renderTmpl.onRegister = onRegister;
 	lib.renderTmpl.engines = engines;
+
+	$(window).load(function() {
+		if (_renderTmplLoaded === false)
+			load();
+	});
 
 })(this, this.jQuery);
