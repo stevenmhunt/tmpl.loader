@@ -209,7 +209,7 @@ var renderTmpl = {};
 		//integration of the jsRender library.
 		jsrender: function(name) {
 			//use default name if no name is given.
-			var alias = (name === undefined ? "x-jsrender" : name);
+			var alias = (name === undefined ? "jsrender" : name);
 			
 			onRender(alias, function(tmpl, data) {
 				var a = (!jQuery ? jsviews : jQuery);
