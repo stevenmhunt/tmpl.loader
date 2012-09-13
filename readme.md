@@ -1,4 +1,4 @@
-RenderTmpl: Simple Template Loading and Rendering
+Tmpl.Loader: Simple Template Loading and Rendering
 =================================================
 
 **Version 0.1**
