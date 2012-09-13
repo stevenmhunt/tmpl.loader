@@ -1,4 +1,4 @@
-Tmpl.Loader: Simple Template Loading and Rendering
+tmpl.loader: Simple Template Loading and Rendering
 =================================================
 
 **Version 0.1**
@@ -105,4 +105,8 @@ $.tmplLoader('mytemplate_multi_section1', { data: "foo" });
 Future Releases
 ---------------
 
-Add even more templating engines.
+Add jQuery deferred object support (if jQuery is available when executing).
+
+Add more templating engines.
+
+Add unit testing to repo.
