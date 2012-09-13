@@ -1,13 +1,13 @@
-/* renderTmpl
+/* tmpl.loader
  * version 0.1
- * http://github.com/stevenmtwhunt/rendertmpl */
+ * http://github.com/stevenmtwhunt/tmpl.loader */
 
-var renderTmpl = {};
+var tmplLoader = {};
 
 (function(global, jQuery, undefined) {
 
 	var _tmplCount = 0;
-	var _renderTmplTypes = new Array();
+	var _tmplTypes = new Array();
 	
 	//used to handle xml http requests.
 	//based on code posted by Lukasz Szajkowski.
@@ -45,20 +45,20 @@ var renderTmpl = {};
 	
 	//used to render templates based on name and data.
 	var render = function(tmpl, data) {
-		var fn = onRender(_renderTmplTypes[tmpl]);
+		var fn = onRender(_tmplTypes[tmpl]);
 		return fn(tmpl, data);
 	};
 	
-	var _renderTmplLoaded = false;
+	var _loaded = false;
 	
 	//loads templates from associated files.
 	var load = function() {
 
 		//only load once per request.
-		if (_renderTmplLoaded)
+		if (_loaded)
 			return;
 						
-		_renderTmplLoaded = true;	
+		_loaded = true;	
 		
 		//register all configured engines.
 		for (var key in engines) {
@@ -92,6 +92,7 @@ var renderTmpl = {};
 			}
 		}
 		
+		//trim string function written by Steven Levithan.
 		var trimString = function(str) {
 			return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 		};
@@ -127,7 +128,7 @@ var renderTmpl = {};
 							
 							if (temp.length > 0)
 								items[partname] = ""+temp;
-								
+							
 							temp = "";
 							partname = ""+_partname;
 						}
@@ -141,7 +142,7 @@ var renderTmpl = {};
 					for (var key in items) {
 		
 						//build array that remembers which type the template is.
-						_renderTmplTypes[key] = relName;
+						_tmplTypes[key] = relName;
 
 						reg(key, items[key]);
 					}
@@ -149,7 +150,7 @@ var renderTmpl = {};
 				else {
 
 					//build array that remembers which type the template is.
-					_renderTmplTypes[name] = relName;
+					_tmplTypes[name] = relName;
 
 					reg(name, data);
 				}
@@ -172,12 +173,12 @@ var renderTmpl = {};
 	
 	var reload = function() {
 		
-		if (_renderTmplLoaded) {
-			for (var i = 0; i < _renderTmplOnReset.length; i++) {
-				var reset = _renderTmplOnReset[i];
+		if (_loaded) {
+			for (var i = 0; i < _onReset.length; i++) {
+				var reset = _onReset[i];
 				reset();
 			}
-			_renderTmplLoaded = false;
+			_loaded = false;
 		}
 		
 		load();
@@ -186,27 +187,27 @@ var renderTmpl = {};
 	//resets the templates.
 	var reset = function() {
 
-		for (var i = 0; i < _renderTmplOnReset.length; i++) {
-			var reset = _renderTmplOnReset[i];
+		for (var i = 0; i < _onReset.length; i++) {
+			var reset = _onReset[i];
 			reset();
 		}
 
-		_renderTmplOnRender = new Array();
-		_renderTmplOnRegister = new Array();
-		_renderTmplOnReset = new Array();
+		_onRender = new Array();
+		_onRegister = new Array();
+		_onReset = new Array();
 	}
 	
 	//manages lambdas to call when templates are ready.
-	var _renderTmplReady = new Array();
+	var _ready = new Array();
 	var ready = function(lambda) {
 		if (lambda === undefined) {
-			for (var i = 0; i < _renderTmplReady.length; i++) {
-				var fn = _renderTmplReady[i];
+			for (var i = 0; i < _ready.length; i++) {
+				var fn = _ready[i];
 				fn();
 			}
 		}
 		else
-			_renderTmplReady.push(lambda);
+			_ready.push(lambda);
 	};
 	
 	//generic lambda handler
@@ -235,24 +236,24 @@ var renderTmpl = {};
 	};
 	
 	//on render lambda handler.
-	var _renderTmplOnRender = new Array();
+	var _onRender = new Array();
 	var onRender = function(name, lambda) {
-		return lambdaHandler(_renderTmplOnRender, name, lambda);
+		return lambdaHandler(_onRender, name, lambda);
 	};
 	
 	//on register lambda handler.
-	var _renderTmplOnRegister = new Array();
+	var _onRegister = new Array();
 	var onRegister = function(name, lambda) {
-		return lambdaHandler(_renderTmplOnRegister, name, lambda);
+		return lambdaHandler(_onRegister, name, lambda);
 	};
 	
 	//on reset lambda handler.
-	var _renderTmplOnReset = new Array();
+	var _onReset = new Array();
 	var onReset = function(name, lambda) {
-		return lambdaHandler(_renderTmplOnReset, name, lambda);
+		return lambdaHandler(_onReset, name, lambda);
 	};
 	
-	var _renderTmplBasicTmpls = {};
+	var _basicTmpls = {};
 	
 	var engines = {
 		
@@ -285,11 +286,11 @@ var renderTmpl = {};
 			var alias = (name === undefined ? "basic" : name);
 			
 			onRegister(alias, function(tmpl, data) {
-				_renderTmplBasicTmpls[tmpl] = data;
+				_basicTmpls[tmpl] = data;
 			});
 			
 			onRender(alias, function(tmpl, data) {
-				var result = ""+_renderTmplBasicTmpls[tmpl];
+				var result = ""+_basicTmpls[tmpl];
 				for (key in data) {
 					result = result.replace('{'+key+'}', data[key]);				
 				}
@@ -297,7 +298,7 @@ var renderTmpl = {};
 			});
 			
 			onReset(alias, function() {
-				_renderTmplBasicTmpls = {};
+				_basicTmpls = {};
 			});
 			
 		},
@@ -310,20 +311,20 @@ var renderTmpl = {};
 	};
 
 	//register functions manually.
-	renderTmpl.render = render;
-	renderTmpl.reset = reset;
-	renderTmpl.reload = reload;
-	renderTmpl.ready = ready;
-	renderTmpl.engines = engines;
+	tmplLoader.render = render;
+	tmplLoader.reset = reset;
+	tmplLoader.reload = reload;
+	tmplLoader.ready = ready;
+	tmplLoader.engines = engines;
 
 	//register jQuery extensions if available.
 	if (jQuery) {
-		jQuery.renderTmpl = render;
-		jQuery.renderTmpl.render = render;
-		jQuery.renderTmpl.reset = reset;
-		jQuery.renderTmpl.reload = reload;
-		jQuery.renderTmpl.ready = ready;
-		jQuery.renderTmpl.engines = engines;
+		jQuery.tmplLoader = render;
+		jQuery.tmplLoader.render = render;
+		jQuery.tmplLoader.reset = reset;
+		jQuery.tmplLoader.reload = reload;
+		jQuery.tmplLoader.ready = ready;
+		jQuery.tmplLoader.engines = engines;
 	}
 	
 	/*addLoadEvent() was written by Simon Willison. */
@@ -343,7 +344,7 @@ var renderTmpl = {};
 
 	//fire load function once the window loads.	
 	addLoadEvent(function() {
-		if (_renderTmplLoaded === false)
+		if (_loaded === false)
 			load();
 	});
 

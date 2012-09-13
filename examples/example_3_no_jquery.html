@@ -2,18 +2,18 @@
 <html>
 	<head>
 
-		<title>renderTmpl - Example 3 - no jQuery</title>
+		<title>tmpl.loader - Example 3 - no jQuery</title>
 	
 		<link rel="template/custom-engine" type="text/html" href="mytemplate.tmpl.html" />
 
-		<script src="../rendertmpl.js" type="text/javascript"></script>
+		<script src="../tmpl.loader.js" type="text/javascript"></script>
 		
 		<script type="text/javascript">
 		
 		var templates = {};
 		
 		//register the engine.
-		renderTmpl.engines.register('custom-engine', {
+		tmplLoader.engines.register('custom-engine', {
 			
 			//called when registering the template.
 			register: function(name, tmpl) {
@@ -31,14 +31,14 @@
 			}
 		});		
 		
-		renderTmpl.ready(function() {
-			document.getElementById('output').innerHTML = renderTmpl.render('mytemplate', { message: "test message!" });
+		tmplLoader.ready(function() {
+			document.getElementById('output').innerHTML = tmplLoader.render('mytemplate', { message: "test message!" });
 		});
 		</script>
 		
 	</head>
 	<body>
-		<h1>renderTmpl Example 3: Custom engine running without jQuery</h1>
+		<h1>tmpl.loader Example 3: Custom engine running without jQuery</h1>
 		Note that if you run this html file without a web server, you may receive error messages in some browsers due to security issues with loading local files.
 		<h3>Sample Output:</h3>
 		<div id="output"></div>
