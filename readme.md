@@ -12,13 +12,21 @@ Allows templates to be broken out into seperate files.
 
 Supports multiple template engines side-by-side on a single page.
 
-Built-in support for jsRender.
-
 Works with jQuery... or not. Your choice.
 
 Notifies your javascript code when templates have loaded with the ready() callbacks.
 
-How to use
+Supported Templating Engines
+----------------------------
+<ul>
+<li>jsRender</li>
+<li>jSmart</li>
+<li>Handlebars</li>
+<li>Mustache</li>
+<li>More to come...!</li>
+</ul>
+
+How To Use
 ----------
 
 1) Add your template file as a link:
@@ -94,7 +102,7 @@ template section 2
 $.tmplLoader('mytemplate_multi_section1', { data: "foo" });
 ```
 
-Future releases
+Future Releases
 ---------------
 
-Add additional templating engines.
+Add even more templating engines.
