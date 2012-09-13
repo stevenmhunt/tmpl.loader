@@ -62,7 +62,7 @@ var tmplLoader = {};
 		
 		//register all configured engines.
 		for (var key in engines) {
-			if (key != 'register') {
+			if (key != 'register' && key.length > 0 && key.substr(0, 1) != '_') {
 				engines[key]();
 			}
 		}
@@ -275,6 +275,60 @@ var tmplLoader = {};
 			onReset(alias, function() {
 				var a = (!jQuery ? jsviews : jQuery);
 				a.templates = {};
+			});
+		},
+		
+		_jsmart: {},		
+		jsmart: function(name) {
+			//use default name if no name is given.
+			var alias = (name === undefined ? "jsmart" : name);
+			
+			onRender(alias, function(tmpl, data) {
+				return engines._jsmart[tmpl].fetch(data);
+			});
+	
+			onRegister(alias, function(tmpl, data) {
+				engines._jsmart[tmpl] = new jSmart(data);
+			});
+			
+			onReset(alias, function() {
+				engines._jsmart = {};
+			});
+		},
+		
+		_mustache: {},
+		mustache: function(name) {
+			//use default name if no name is given.
+			var alias = (name === undefined ? "mustache" : name);
+			
+			onRender(alias, function(tmpl, data) {
+				return Mustache.render(engines._mustache, view);
+			});
+	
+			onRegister(alias, function(tmpl, data) {
+				engines._mustache[tmpl] = data;
+			});
+			
+			onReset(alias, function() {
+				engines._mustache = {};
+			});
+		},
+		
+		_handlebars: {},
+		handlebars: function(name) {
+			//use default name if no name is given.
+			var alias = (name === undefined ? "handlebars" : name);
+			
+			onRender(alias, function(tmpl, data) {
+				return engines._handlebars[tmpl](data);
+			});
+	
+			onRegister(alias, function(tmpl, data) {
+				engines._handlebars[tmpl] = Handlebars.compile(data);
+			});
+			
+			onReset(alias, function() {
+				engines._handlebars = {};
 			});
 		},
 		
