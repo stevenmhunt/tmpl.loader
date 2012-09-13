@@ -31,12 +31,12 @@ Note that the name of the template is automatically extracted from the file name
 2) In JavaScript, add a ready callback.
 ```javascript
 //set a callback so that you can do something with the templates once they are loaded.
-$.renderTmpl.ready(function() {
+$.tmplLoader.ready(function() {
 	
 	//now we're ready to start rendering with the template.
 	
-	//just call renderTmpl() and pass the template name and a model to bind with.
-	var content = $.renderTmpl('mytemplate', { message: "whatever" });
+	//just call tmplLoader() and pass the template name and a model to bind with.
+	var content = $.tmplLoader('mytemplate', { message: "whatever" });
 	
 	//let's have it pop up on the screen.
 	alert('rendered content: '+content);		
@@ -49,14 +49,14 @@ Fancy Stuff
 You can register a built-in template engine with a custom alias I.E. rel="template/custom-alias":
 ```javascript	
 //jsrender by default uses "jsrender" and is configured automatically.
-$.renderTmpl.engines.jsrender('custom-alias'); 
+$.tmplLoader.engines.jsrender('custom-alias'); 
 ```
 
 You can also register a completely custom template engine:
 ```javascript
 
 //register a custom engine:
-$.renderTmpl.engines.register('engine-name', {
+$.tmplLoader.engines.register('engine-name', {
 	//code to register the template with some sort of collection.
 	register: function(name, data) {
 		...
@@ -91,7 +91,7 @@ template section 2
 
 3) Reference the templates as "file name"_"part name":
 ```javascript
-$.renderTmpl('mytemplate_multi_section1', { data: "foo" });
+$.tmplLoader('mytemplate_multi_section1', { data: "foo" });
 ```
 
 Future releases
