@@ -1,7 +1,7 @@
 tmpl.loader: Simple Template Loading and Rendering
 =================================================
 
-**Version 0.1**
+**Version 0.2**
 
 *Loads external template files and renders them with a template engine in JavaScript.*
 
@@ -23,6 +23,9 @@ Supported Templating Engines
 <li>jSmart</li>
 <li>Handlebars</li>
 <li>Mustache</li>
+<li>Plates</li>
+<li>IST</li>
+<li>doT</li>
 <li>More to come...!</li>
 </ul>
 
@@ -39,12 +42,12 @@ Note that the name of the template is automatically extracted from the file name
 2) In JavaScript, add a ready callback.
 ```javascript
 //set a callback so that you can do something with the templates once they are loaded.
-$.tmplLoader.ready(function() {
+tmplLoader.ready(function() {
 	
 	//now we're ready to start rendering with the template.
 	
-	//just call tmplLoader() and pass the template name and a model to bind with.
-	var content = $.tmplLoader('mytemplate', { message: "whatever" });
+	//just call tmplLoader.render() and pass the template name and a model to bind with.
+	var content = tmplLoader.render('mytemplate', { message: "whatever" });
 	
 	//let's have it pop up on the screen.
 	alert('rendered content: '+content);		
@@ -57,14 +60,14 @@ Fancy Stuff
 You can register a built-in template engine with a custom alias I.E. rel="template/custom-alias":
 ```javascript	
 //jsrender by default uses "jsrender" and is configured automatically.
-$.tmplLoader.engines.jsrender('custom-alias'); 
+tmplLoader.engines.jsrender('custom-alias'); 
 ```
 
 You can also register a completely custom template engine:
 ```javascript
 
 //register a custom engine:
-$.tmplLoader.engines.register('engine-name', {
+tmplLoader.engines.register('engine-name', {
 	//code to register the template with some sort of collection.
 	register: function(name, data) {
 		...
@@ -99,13 +102,11 @@ template section 2
 
 3) Reference the templates as "file name"_"part name":
 ```javascript
-$.tmplLoader('mytemplate_multi_section1', { data: "foo" });
+tmplLoader.render('mytemplate_multi_section1', { data: "foo" });
 ```
 
 Future Releases
 ---------------
-
-Add jQuery deferred object support (if jQuery is available when executing).
 
 Add more templating engines.
 

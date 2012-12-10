@@ -1,10 +1,10 @@
 /* tmpl.loader
- * version 0.1
+ * version 0.2
  * http://github.com/stevenmtwhunt/tmpl.loader */
 
-var tmplLoader = {};
+var tmplLoader = tmplLoader || { version: "0.2" };
 
-(function(global, jQuery, undefined) {
+(function(tl, jQuery) {
 
 	var _tmplCount = 0;
 	var _tmplTypes = new Array();
@@ -44,9 +44,9 @@ var tmplLoader = {};
 	};
 	
 	//used to render templates based on name and data.
-	var render = function(tmpl, data) {
+	var render = function(tmpl, data, opt) {
 		var fn = onRender(_tmplTypes[tmpl]);
-		return fn(tmpl, data);
+		return fn(tmpl, data, opt);
 	};
 	
 	var _loaded = false;
@@ -332,6 +332,60 @@ var tmplLoader = {};
 			});
 		},
 		
+		_plates: {},
+		plates: function(name) {
+			//use default name if no name is given.
+			var alias = (name === undefined ? "plates" : name);
+			
+			onRender(alias, function(tmpl, data, map) {
+				return Plates.bind(engines._plates[tmpl], data, map);
+			});
+			
+			onRegister(alias, function(tmpl, data) {
+				engines._plates[tmpl] = data;
+			});
+			
+			onReset(alias, function() {
+				engines._plates = {};
+			});
+		},
+		
+		_ist: {},
+		ist: function(name) {
+			//use default name if no name is given.
+			var alias = (name === undefined ? "ist" : "");
+			
+			onRender(alias, function(tmpl, data, dom) {
+				return engines._ist[tmpl].render(data, dom);
+			});
+			
+			onRegister(alias, function(tmpl, data) {
+				engines._ist[tmpl] = ist(data);
+			});
+			
+			onReset(alias, function() {
+				engines._ist = {};
+			});
+		},
+		
+		_doT: {},
+		doT: function(name) {
+			//use default name if no name is given.
+			var alias = (name === undefined ? "doT" : "");
+			
+			onRender(alias, function(tmpl, data) {
+				return engines._doT[tmpl](data);
+			});
+			
+			onRegister(alias, function(tmpl, data) {
+				engines._doT[tmpl] = doT.template(data);
+			});
+			
+			onReset(alias, function() {
+				engines._doT = {};
+			});
+		},
+		
 		/* basic template engine for use in examples.
 		 * NOT RECOMMENDED FOR PRODUCTION USE.
 		 * Iterates through model and replaces {key} with the value from the model. */
@@ -365,11 +419,11 @@ var tmplLoader = {};
 	};
 
 	//register functions manually.
-	tmplLoader.render = render;
-	tmplLoader.reset = reset;
-	tmplLoader.reload = reload;
-	tmplLoader.ready = ready;
-	tmplLoader.engines = engines;
+	tl.render = render;
+	tl.reset = reset;
+	tl.reload = reload;
+	tl.ready = ready;
+	tl.engines = engines;
 
 	//register jQuery extensions if available.
 	if (jQuery) {
@@ -402,4 +456,4 @@ var tmplLoader = {};
 			load();
 	});
 
-})(this, this.jQuery);
+})(tmplLoader, this.jQuery);
