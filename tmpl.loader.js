@@ -7,41 +7,46 @@ var tmplLoader = tmplLoader || { version: "0.2" };
 (function(tl, jQuery) {
 
 	var _tmplCount = 0;
-	var _tmplTypes = new Array();
+	var _tmplTypes = [];
 	
 	//used to handle xml http requests.
 	//based on code posted by Lukasz Szajkowski.
 	var xhr = function(url, callback) {
-
-	  	var http_request = false;
-		if (window.XMLHttpRequest) { // Mozilla, Safari,...
-	       http_request = new XMLHttpRequest();	   
-	       if (http_request.overrideMimeType)
-	           http_request.overrideMimeType('text/xml');
-	   } 
-	   else if (window.ActiveXObject) { // IE
-	       try { http_request = new ActiveXObject("Msxml2.XMLHTTP"); } 
-		   catch(e) {
-		       try { http_request = new ActiveXObject("Microsoft.XMLHTTP"); } 
-			   catch (e) { }
-	       }	   
-	   }
-	
-	   if (!http_request)       
-	       return false;
-	
-	   http_request.onreadystatechange = function() {
-	       if (http_request.readyState == 4) {
-	           if (http_request.status == 200)
-					callback(http_request.responseText);
-			   else return http_request.status;		   
+	    var http_request;
+	    
+        if (window.XMLHttpRequest) { // Mozilla, Safari,...
+	       http_request = new XMLHttpRequest();
+	       
+           if (http_request.overrideMimeType) {
+               http_request.overrideMimeType('text/xml');
 	       }
-	   };
+	    } else if (window.ActiveXObject) { // IE
+	        try {
+                http_request = new ActiveXObject("Msxml2.XMLHTTP");
+            } 
+		    catch(e) {
+		        try {
+                    http_request = new ActiveXObject("Microsoft.XMLHTTP");
+                } 
+			    catch (e) {}
+	       }	   
+	    }
+	
+	    if (!http_request) return;
+	
+	    http_request.onreadystatechange = function() {
+	        if (http_request.readyState === 4) {
+	            if (http_request.status === 200) {
+				    callback(http_request.responseText);
+	            } else {
+                    return http_request.status;
+	            }
+	        }
+	    };
 	   
-	   http_request.open('GET', url, true);
-	   http_request.send(null);
-
-	};
+	    http_request.open('GET', url, true);
+	    http_request.send(null);
+    };
 	
 	//used to render templates based on name and data.
 	var render = function(tmpl, data, opt) {
@@ -49,26 +54,23 @@ var tmplLoader = tmplLoader || { version: "0.2" };
 		return fn(tmpl, data, opt);
 	};
 	
-	var _loaded = false;
+	var _loaded;
 	
 	//loads templates from associated files.
 	var load = function() {
 
 		//only load once per request.
-		if (_loaded)
-			return;
-						
-		_loaded = true;	
+		if (_loaded) return;
 		
 		//register all configured engines.
 		for (var key in engines) {
-			if (key != 'register' && key.length > 0 && key.substr(0, 1) != '_') {
-				engines[key]();
+			if (key !== 'register' && key.length > 0 && key.substr(0, 1) !== '_') {
+			    engines[key]();
 			}
 		}
 		
-		var todo = new Array();
-		var rels = new Array();
+		var todo = [];
+		var rels = [];
 		
 		//get all link tags.
 		var links = document.getElementsByTagName('link');
@@ -120,7 +122,7 @@ var tmplLoader = tmplLoader || { version: "0.2" };
 					var lines = data.split("\n");
 					var partname = "";
 					for (var i = 0; i < lines.length; i++) {
-						if (lines[i].length > 14 && lines[i].substr(0, 14) == '<!-- template ') {
+						if (lines[i].length > 14 && lines[i].substr(0, 14) === '<!-- template ') {
 							
 							//get the template name.
 							var _partname = ""+lines[i].substr(14);
@@ -156,7 +158,7 @@ var tmplLoader = tmplLoader || { version: "0.2" };
 				}
 							
 				//subtract counter.				
-				if (--_tmplCount == 0) {
+				if (--_tmplCount === 0) {
 					_tmplCount = -1;
 					ready();
 				}
@@ -192,13 +194,13 @@ var tmplLoader = tmplLoader || { version: "0.2" };
 			reset();
 		}
 
-		_onRender = new Array();
-		_onRegister = new Array();
-		_onReset = new Array();
+		_onRender = [];
+		_onRegister = [];
+		_onReset = [];
 	}
 	
 	//manages lambdas to call when templates are ready.
-	var _ready = new Array();
+	var _ready = [];
 	var ready = function(lambda) {
 		if (lambda === undefined) {
 			for (var i = 0; i < _ready.length; i++) {
@@ -216,8 +218,9 @@ var tmplLoader = tmplLoader || { version: "0.2" };
 		//if the name provided is already in the array...
 		if (name in arr) {
 			//if no lambda is provided, return the lambda in the array.
-			if (lambda === undefined)
-				return arr[name];
+			if (lambda === undefined) {
+                return arr[name];
+			}
 			//if the value provided is null, remove the item from the array.
 			else if (lambda == null) {
 				delete arr[name];
@@ -225,30 +228,32 @@ var tmplLoader = tmplLoader || { version: "0.2" };
 			}
 		}
 		//if the name is undefined, then return the entire array.
-		else if (name === undefined)
+		else if  (name === undefined) {
 			return arr;
+		}
 		//if the name is not in the array, and the lambda is not valid, return.
-		else if (lambda === undefined || typeof lambda != 'function')
+		else if (lambda === undefined || typeof lambda != 'function') {
 			return null;
+		}
 		
 		//if the name is not in the array, or the name is in the array but none of the other conditions matched, add/update the value.
 		arr[name] = lambda;
 	};
 	
 	//on render lambda handler.
-	var _onRender = new Array();
+	var _onRender = [];
 	var onRender = function(name, lambda) {
 		return lambdaHandler(_onRender, name, lambda);
 	};
 	
 	//on register lambda handler.
-	var _onRegister = new Array();
+	var _onRegister = [];
 	var onRegister = function(name, lambda) {
 		return lambdaHandler(_onRegister, name, lambda);
 	};
 	
 	//on reset lambda handler.
-	var _onReset = new Array();
+	var _onReset = [];
 	var onReset = function(name, lambda) {
 		return lambdaHandler(_onReset, name, lambda);
 	};
@@ -438,7 +443,7 @@ var tmplLoader = tmplLoader || { version: "0.2" };
 	/*addLoadEvent() was written by Simon Willison. */
 	function addLoadEvent(func) {
 	  var oldonload = window.onload;
-	  if (typeof window.onload != 'function') {
+	  if (typeof window.onload !== 'function') {
 	    window.onload = func;
 	  } else {
 	    window.onload = function() {
@@ -452,8 +457,7 @@ var tmplLoader = tmplLoader || { version: "0.2" };
 
 	//fire load function once the window loads.	
 	addLoadEvent(function() {
-		if (_loaded === false)
-			load();
+		if (!_loaded) load();
 	});
 
 })(tmplLoader, this.jQuery);
