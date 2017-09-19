@@ -405,7 +405,9 @@ var tmplLoader = tmplLoader || { version: "0.2" };
 			onRender(alias, function(tmpl, data) {
 				var result = ""+_basicTmpls[tmpl];
 				for (key in data) {
-					result = result.replace('{'+key+'}', data[key]);				
+					/*double curly braces for current version of jsrender */
+					/*! JsRender v0.9.88 (Beta): http://jsviews.com/#jsrender */
+					result = result.replace('{{'+key+'}}', data[key]);				
 				}
 				return result;
 			});
